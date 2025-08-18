@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html><!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
@@ -7,118 +7,107 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <style>
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
       display: flex;
       height: 100vh;
+      background: #f2f4f8;
     }
     header {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background: #2c3e50;
+      top: 0; left: 0; right: 0;
+      background: #1e3a8a;
       color: white;
-      padding: 15px;
+      text-align: center;
+      padding: 12px;
       font-size: 20px;
       font-weight: bold;
-      text-align: center;
       z-index: 1000;
     }
-    .container {
-      margin-top: 70px;
-      display: flex;
-      width: 100%;
-    }
-    .projects {
-      flex: 3;
-      padding: 20px;
-      overflow-y: auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 15px;
-    }
-    .sidebar {
-      flex: 1;
-      padding: 20px;
-      background: #f4f4f4;
-      border-left: 2px solid #ddd;
-      overflow-y: auto;
-    }
-    .card {
+    #form-panel {
+      width: 350px;
       background: #fff;
-      padding: 15px;
+      padding: 20px;
+      box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+      margin-left: auto;
+      margin-top: 60px;
+      overflow-y: auto;
+    }
+    #projects {
+      flex: 1;
+      padding: 80px 20px 20px 20px;
+      overflow-y: auto;
+    }
+    .project-card {
+      background: white;
       border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      transition: transform 0.2s;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .avatar {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+    }
+    button {
+      background: #1e3a8a;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 5px;
       cursor: pointer;
     }
-    .card:hover { transform: scale(1.03); }
-    .card h3 { margin: 0; }
-    .card small { color: gray; }
-    .card-details {
+    .details {
       display: none;
-      margin-top: 10px;
-      font-size: 14px;
-    }
-    .card-notes {
       margin-top: 10px;
       border-top: 1px solid #ddd;
       padding-top: 10px;
     }
-    .note { font-size: 13px; margin-bottom: 5px; }
-    button {
-      background: #3498db;
-      color: white;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    button.delete {
-      background: #e74c3c;
-      margin-left: 5px;
-    }
-    label { display: block; margin-top: 10px; }
-    input, textarea, select {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
+    .note {
+      font-size: 14px;
+      background: #f9f9f9;
+      margin: 5px 0;
+      padding: 5px;
       border-radius: 5px;
     }
   </style>
 </head>
 <body>
   <header>📌 Proje Takip Sistemi</header>
-  <div class="container">
-    <div class="projects" id="projects"></div>
-    <div class="sidebar">
-      <h2>Yeni Proje Ekle</h2>
-      <form id="projectForm">
-        <label>Proje Adı <input type="text" id="name" required></label>
-        <label>Açıklama <textarea id="description"></textarea></label>
-        <label>Tür
-          <select id="type">
-            <option value="3D Tasarım">3D Tasarım</option>
-            <option value="Tersine Mühendislik">Tersine Mühendislik</option>
-            <option value="Prototipleme">Prototipleme</option>
-          </select>
-        </label>
-        <label>Teklif Linki <input type="url" id="offer"></label>
-        <label>Fatura Linki <input type="url" id="invoice"></label>
-        <label>Satın Alma (opsiyonel) <input type="text" id="purchase"></label>
-        <label>Başlangıç Tarihi <input type="date" id="startDate" required></label>
-        <label>Bitiş Tarihi <input type="date" id="endDate"></label>
-        <label>Girişi Yapan Kişi <input type="text" id="user" required></label>
-        <button type="submit">Kaydet</button>
-      </form>
-    </div>
+
+  <div id="projects"></div>
+
+  <div id="form-panel">
+    <h3>Yeni Proje Ekle</h3>
+    <input id="title" placeholder="Proje Başlığı" style="width:100%;margin:5px 0;"><br>
+    <textarea id="description" placeholder="Proje Açıklaması" style="width:100%;margin:5px 0;"></textarea><br>
+    <label>Başlangıç Tarihi</label>
+    <input type="date" id="startDate" style="width:100%;margin:5px 0;">
+    <label>Bitiş Tarihi</label>
+    <input type="date" id="endDate" style="width:100%;margin:5px 0;">
+    <input id="proposal" placeholder="Teklif Linki" style="width:100%;margin:5px 0;">
+    <input id="invoice" placeholder="Fatura Linki" style="width:100%;margin:5px 0;">
+    <select id="type" style="width:100%;margin:5px 0;">
+      <option value="3D Tasarım">3D Tasarım</option>
+      <option value="Tersine Mühendislik">Tersine Mühendislik</option>
+      <option value="Prototipleme">Prototipleme</option>
+    </select>
+    <input id="addedBy" placeholder="Ekleyen Kişi" style="width:100%;margin:5px 0;">
+    <button onclick="addProject()">Kaydet</button>
   </div>
 
   <script>
-    // Firebase Config (kendi config'inle değiştir)
+    // Firebase config buraya kendi config'ini koy
     const firebaseConfig = {
         apiKey: "AIzaSyCxwXtrXxHbC_LcIlbK_PRIQ4v5pXt1l6w",
         authDomain: "atolye1886projectmanagement.firebaseapp.com",
@@ -131,83 +120,97 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    const form = document.getElementById("projectForm");
-    const projectsContainer = document.getElementById("projects");
+    // Rastgele renk avatar
+    function randomColor() {
+      const colors = ["#ef4444","#f59e0b","#10b981","#3b82f6","#8b5cf6","#ec4899"];
+      return colors[Math.floor(Math.random()*colors.length)];
+    }
 
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
+    function addProject() {
       const project = {
-        name: form.name.value,
-        description: form.description.value,
-        type: form.type.value,
-        offer: form.offer.value,
-        invoice: form.invoice.value,
-        purchase: form.purchase.value,
-        startDate: form.startDate.value,
-        endDate: form.endDate.value,
-        user: form.user.value,
-        notes: []
+        title: document.getElementById("title").value,
+        description: document.getElementById("description").value,
+        startDate: document.getElementById("startDate").value,
+        endDate: document.getElementById("endDate").value,
+        proposal: document.getElementById("proposal").value,
+        invoice: document.getElementById("invoice").value,
+        type: document.getElementById("type").value,
+        addedBy: document.getElementById("addedBy").value,
+        avatarColor: randomColor(),
+        createdAt: Date.now(),
+        notes: {}
       };
       db.ref("projects").push(project);
-      form.reset();
-    });
+      document.querySelectorAll("#form-panel input, #form-panel textarea").forEach(el=>el.value="");
+    }
 
-    db.ref("projects").on("value", snapshot => {
-      projectsContainer.innerHTML = "";
+    function renderProjects(snapshot) {
+      const projectsDiv = document.getElementById("projects");
+      projectsDiv.innerHTML = "";
+      let projects = [];
       snapshot.forEach(child => {
-        const project = child.val();
-        const key = child.key;
-
+        projects.push({ id: child.key, ...child.val() });
+      });
+      projects.sort((a,b)=>b.createdAt - a.createdAt);
+      projects.forEach(p=>{
         const card = document.createElement("div");
-        card.className = "card";
-
+        card.className = "project-card";
         card.innerHTML = `
-          <h3>${project.name}</h3>
-          <small>${project.type}</small><br>
-          <small>Başlangıç: ${project.startDate} | Bitiş: ${project.endDate || "-"}</small>
-          <div class="card-details">
-            <p>${project.description}</p>
-            <p>📎 Teklif: <a href="${project.offer}" target="_blank">${project.offer || "-"}</a></p>
-            <p>📄 Fatura: <a href="${project.invoice}" target="_blank">${project.invoice || "-"}</a></p>
-            <p>🛒 Satın Alma: ${project.purchase || "-"}</p>
-            <p>👤 ${project.user}</p>
-            <button class="delete" onclick="deleteProject('${key}')">Sil</button>
-            <div class="card-notes">
-              <h4>Notlar</h4>
-              <div id="notes-${key}">
-                ${(project.notes || []).map(n => `<div class="note">📌 ${n.text} <br><small>${n.date}</small></div>`).join("")}
-              </div>
-              <input type="text" id="noteInput-${key}" placeholder="Not ekle...">
-              <button onclick="addNote('${key}')">Ekle</button>
+          <div class="project-header">
+            <div class="profile">
+              <div class="avatar" style="background:${p.avatarColor}"></div>
+              <strong>${p.addedBy}</strong>
             </div>
+            <button onclick="toggleDetails('${p.id}')">Detaylar</button>
+          </div>
+          <h4>${p.title}</h4>
+          <div class="details" id="details-${p.id}">
+            <p><b>Açıklama:</b> ${p.description}</p>
+            <p><b>Tür:</b> ${p.type}</p>
+            <p><b>Başlangıç:</b> ${p.startDate} | <b>Bitiş:</b> ${p.endDate}</p>
+            <p><b>Teklif:</b> <a href="${p.proposal}" target="_blank">Link</a></p>
+            <p><b>Fatura:</b> <a href="${p.invoice}" target="_blank">Link</a></p>
+            <div id="notes-${p.id}"></div>
+            <input id="noteInput-${p.id}" placeholder="Not ekle..." style="width:70%">
+            <button onclick="addNote('${p.id}')">Ekle</button>
+            <button onclick="deleteProject('${p.id}')">❌ Sil</button>
           </div>
         `;
-
-        card.addEventListener("click", (e) => {
-          if (!e.target.closest("button")) {
-            const details = card.querySelector(".card-details");
-            details.style.display = details.style.display === "block" ? "none" : "block";
-          }
-        });
-
-        projectsContainer.appendChild(card);
+        if (p.notes) {
+          Object.values(p.notes).forEach(n=>{
+            const noteDiv = document.createElement("div");
+            noteDiv.className="note";
+            noteDiv.innerText=`${n.date} - ${n.text}`;
+            card.querySelector(`#notes-${p.id}`).appendChild(noteDiv);
+          });
+        }
+        projectsDiv.appendChild(card);
       });
-    });
-
-    function deleteProject(key) {
-      db.ref("projects/" + key).remove();
     }
 
-    function addNote(key) {
-      const input = document.getElementById("noteInput-" + key);
-      const note = input.value.trim();
-      if (note) {
-        const date = new Date().toLocaleString();
-        db.ref("projects/" + key + "/notes").push({ text: note, date });
-        input.value = "";
+    function toggleDetails(id) {
+      const d = document.getElementById(`details-${id}`);
+      d.style.display = (d.style.display==="block"?"none":"block");
+    }
+
+    function addNote(id) {
+      const input = document.getElementById(`noteInput-${id}`);
+      const text = input.value;
+      if (!text) return;
+      const note = { text, date: new Date().toLocaleString() };
+      db.ref("projects/"+id+"/notes").push(note);
+      input.value="";
+    }
+
+    function deleteProject(id) {
+      if (confirm("Bu projeyi silmek istediğine emin misin?")) {
+        db.ref("projects/"+id).remove();
       }
     }
+
+    db.ref("projects").on("value", renderProjects);
   </script>
 </body>
 </html>
+
 
