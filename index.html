@@ -7,135 +7,118 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
       margin: 0;
-      padding: 0;
+      font-family: Arial, sans-serif;
       display: flex;
-      flex-direction: column;
       height: 100vh;
     }
     header {
-      background: #1e3a8a;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: #2c3e50;
       color: white;
       padding: 15px;
-      font-size: 22px;
+      font-size: 20px;
       font-weight: bold;
       text-align: center;
+      z-index: 1000;
     }
-    main {
+    .container {
+      margin-top: 70px;
       display: flex;
-      flex: 1;
-    }
-    #form-panel {
-      width: 350px;
-      background: white;
-      padding: 20px;
-      border-left: 1px solid #ccc;
-    }
-    #form-panel h2 {
-      margin-top: 0;
-      font-size: 18px;
-    }
-    #form-panel input, #form-panel select, #form-panel textarea {
-      width: 100%;
-      margin-bottom: 10px;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-    #form-panel button {
-      background: #1e3a8a;
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 6px;
-      cursor: pointer;
       width: 100%;
     }
-    #projects {
-      flex: 1;
+    .projects {
+      flex: 3;
       padding: 20px;
       overflow-y: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 15px;
     }
-    .project-card {
-      background: white;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      padding: 15px;
-      margin-bottom: 15px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .project-card h3 {
-      margin: 0 0 10px;
-    }
-    .project-meta {
-      font-size: 14px;
-      color: #555;
-    }
-    .notes {
-      margin-top: 10px;
-      padding: 10px;
-      background: #f9fafb;
-      border-radius: 6px;
-    }
-    .note {
-      font-size: 13px;
-      margin-bottom: 5px;
-      padding: 4px 6px;
-      border-left: 3px solid #1e3a8a;
-      background: #fff;
-    }
-    .add-note {
-      display: flex;
-      margin-top: 8px;
-    }
-    .add-note input {
+    .sidebar {
       flex: 1;
-      padding: 6px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
+      padding: 20px;
+      background: #f4f4f4;
+      border-left: 2px solid #ddd;
+      overflow-y: auto;
     }
-    .add-note button {
-      margin-left: 5px;
-      background: #2563eb;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 6px 10px;
+    .card {
+      background: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
       cursor: pointer;
     }
-    .delete-btn {
+    .card:hover { transform: scale(1.03); }
+    .card h3 { margin: 0; }
+    .card small { color: gray; }
+    .card-details {
+      display: none;
       margin-top: 10px;
-      background: #dc2626 !important;
+      font-size: 14px;
+    }
+    .card-notes {
+      margin-top: 10px;
+      border-top: 1px solid #ddd;
+      padding-top: 10px;
+    }
+    .note { font-size: 13px; margin-bottom: 5px; }
+    button {
+      background: #3498db;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button.delete {
+      background: #e74c3c;
+      margin-left: 5px;
+    }
+    label { display: block; margin-top: 10px; }
+    input, textarea, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
     }
   </style>
 </head>
 <body>
-  <header><img src="logo.png">📌 Proje Takip Sistemi</header>
-  <main>
-    <div id="projects"></div>
-    <div id="form-panel">
+  <header>📌 Proje Takip Sistemi</header>
+  <div class="container">
+    <div class="projects" id="projects"></div>
+    <div class="sidebar">
       <h2>Yeni Proje Ekle</h2>
-      <input id="title" placeholder="Proje Başlığı">
-      <textarea id="summary" placeholder="Kısa Açıklama"></textarea>
-      <select id="type">
-        <option value="3D Tasarım">3D Tasarım</option>
-        <option value="Tersine Mühendislik">Tersine Mühendislik</option>
-        <option value="Prototipleme">Prototipleme</option>
-      </select>
-      <input id="startDate" type="date" placeholder="Başlangıç Tarihi">
-      <input id="endDate" type="date" placeholder="Bitiş Tarihi">
-      <input id="proposalLink" placeholder="Proje Teklif Linki">
-      <input id="invoiceLink" placeholder="Fatura Linki">
-      <input id="purchaseInfo" placeholder="Satın Alma Bilgisi (opsiyonel)">
-      <input id="author" placeholder="Adınız">
-      <button onclick="addProject()">Kaydet</button>
+      <form id="projectForm">
+        <label>Proje Adı <input type="text" id="name" required></label>
+        <label>Açıklama <textarea id="description"></textarea></label>
+        <label>Tür
+          <select id="type">
+            <option value="3D Tasarım">3D Tasarım</option>
+            <option value="Tersine Mühendislik">Tersine Mühendislik</option>
+            <option value="Prototipleme">Prototipleme</option>
+          </select>
+        </label>
+        <label>Teklif Linki <input type="url" id="offer"></label>
+        <label>Fatura Linki <input type="url" id="invoice"></label>
+        <label>Satın Alma (opsiyonel) <input type="text" id="purchase"></label>
+        <label>Başlangıç Tarihi <input type="date" id="startDate" required></label>
+        <label>Bitiş Tarihi <input type="date" id="endDate"></label>
+        <label>Girişi Yapan Kişi <input type="text" id="user" required></label>
+        <button type="submit">Kaydet</button>
+      </form>
     </div>
-  </main>
+  </div>
 
   <script>
-    // Firebase config BURAYA kendi configini koy!
+    // Firebase Config (kendi config'inle değiştir)
     const firebaseConfig = {
         apiKey: "AIzaSyCxwXtrXxHbC_LcIlbK_PRIQ4v5pXt1l6w",
         authDomain: "atolye1886projectmanagement.firebaseapp.com",
@@ -148,75 +131,83 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    function addProject() {
+    const form = document.getElementById("projectForm");
+    const projectsContainer = document.getElementById("projects");
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
       const project = {
-        title: document.getElementById('title').value,
-        summary: document.getElementById('summary').value,
-        type: document.getElementById('type').value,
-        startDate: document.getElementById('startDate').value,
-        endDate: document.getElementById('endDate').value,
-        proposalLink: document.getElementById('proposalLink').value,
-        invoiceLink: document.getElementById('invoiceLink').value,
-        purchaseInfo: document.getElementById('purchaseInfo').value,
-        author: document.getElementById('author').value,
-        createdAt: Date.now()
+        name: form.name.value,
+        description: form.description.value,
+        type: form.type.value,
+        offer: form.offer.value,
+        invoice: form.invoice.value,
+        purchase: form.purchase.value,
+        startDate: form.startDate.value,
+        endDate: form.endDate.value,
+        user: form.user.value,
+        notes: []
       };
-      db.ref('projects').push(project);
-      document.getElementById('form-panel').reset;
-    }
+      db.ref("projects").push(project);
+      form.reset();
+    });
 
-    function deleteProject(id) {
-      db.ref('projects/' + id).remove();
-    }
-
-    function addNote(projectId, noteText) {
-      const note = {
-        text: noteText,
-        date: new Date().toLocaleString()
-      };
-      db.ref('projects/' + projectId + '/notes').push(note);
-    }
-
-    db.ref('projects').on('value', snapshot => {
-      const projectsDiv = document.getElementById('projects');
-      projectsDiv.innerHTML = "";
+    db.ref("projects").on("value", snapshot => {
+      projectsContainer.innerHTML = "";
       snapshot.forEach(child => {
-        const proj = child.val();
-        const card = document.createElement('div');
-        card.className = 'project-card';
+        const project = child.val();
+        const key = child.key;
+
+        const card = document.createElement("div");
+        card.className = "card";
+
         card.innerHTML = `
-          <h3>${proj.title}</h3>
-          <div class="project-meta">
-            <b>Tür:</b> ${proj.type} <br>
-            <b>Başlangıç:</b> ${proj.startDate} - <b>Bitiş:</b> ${proj.endDate} <br>
-            <b>Teklif:</b> <a href="${proj.proposalLink}" target="_blank">Link</a> |
-            <b>Fatura:</b> <a href="${proj.invoiceLink}" target="_blank">Link</a> <br>
-            <b>Satın Alma:</b> ${proj.purchaseInfo || '-'} <br>
-            <b>Ekleyen:</b> ${proj.author}
-          </div>
-          <button class="delete-btn" onclick="deleteProject('${child.key}')">❌ Sil</button>
-          <div class="notes" id="notes-${child.key}">
-            <b>Notlar:</b>
-          </div>
-          <div class="add-note">
-            <input id="note-input-${child.key}" placeholder="Not ekle...">
-            <button onclick="addNote('${child.key}', document.getElementById('note-input-${child.key}').value)">Ekle</button>
+          <h3>${project.name}</h3>
+          <small>${project.type}</small><br>
+          <small>Başlangıç: ${project.startDate} | Bitiş: ${project.endDate || "-"}</small>
+          <div class="card-details">
+            <p>${project.description}</p>
+            <p>📎 Teklif: <a href="${project.offer}" target="_blank">${project.offer || "-"}</a></p>
+            <p>📄 Fatura: <a href="${project.invoice}" target="_blank">${project.invoice || "-"}</a></p>
+            <p>🛒 Satın Alma: ${project.purchase || "-"}</p>
+            <p>👤 ${project.user}</p>
+            <button class="delete" onclick="deleteProject('${key}')">Sil</button>
+            <div class="card-notes">
+              <h4>Notlar</h4>
+              <div id="notes-${key}">
+                ${(project.notes || []).map(n => `<div class="note">📌 ${n.text} <br><small>${n.date}</small></div>`).join("")}
+              </div>
+              <input type="text" id="noteInput-${key}" placeholder="Not ekle...">
+              <button onclick="addNote('${key}')">Ekle</button>
+            </div>
           </div>
         `;
-        projectsDiv.appendChild(card);
 
-        if (proj.notes) {
-          Object.values(proj.notes).forEach(note => {
-            const noteDiv = document.createElement('div');
-            noteDiv.className = 'note';
-            noteDiv.innerText = `[${note.date}] ${note.text}`;
-            card.querySelector(`#notes-${child.key}`).appendChild(noteDiv);
-          });
-        }
+        card.addEventListener("click", (e) => {
+          if (!e.target.closest("button")) {
+            const details = card.querySelector(".card-details");
+            details.style.display = details.style.display === "block" ? "none" : "block";
+          }
+        });
+
+        projectsContainer.appendChild(card);
       });
     });
+
+    function deleteProject(key) {
+      db.ref("projects/" + key).remove();
+    }
+
+    function addNote(key) {
+      const input = document.getElementById("noteInput-" + key);
+      const note = input.value.trim();
+      if (note) {
+        const date = new Date().toLocaleString();
+        db.ref("projects/" + key + "/notes").push({ text: note, date });
+        input.value = "";
+      }
+    }
   </script>
 </body>
 </html>
-
 
