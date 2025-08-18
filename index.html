@@ -1,54 +1,82 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<title>Proje Takip Kartları</title>
-<style>
-    body { font-family: Arial; background: #f4f6f8; margin:0; padding:20px; }
-    h1 { text-align:center; color:#333; }
-    #projectForm { background:white; padding:15px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); margin-bottom:20px; display:flex; gap:10px; flex-wrap:wrap;}
-    #projectForm input, #projectForm select { padding:8px; border:1px solid #ccc; border-radius:4px; flex:1; font-size:14px;}
-    #projectForm button { background:#4CAF50; color:white; padding:8px 15px; border:none; border-radius:4px; cursor:pointer;}
-    #projectForm button:hover { background:#45a049;}
-    #cardContainer { display:flex; flex-wrap:wrap; gap:15px; justify-content:center;}
-    .card { background:white; border-radius:12px; box-shadow:0 4px 8px rgba(0,0,0,0.15); padding:15px; width:250px; position:relative; transition:transform 0.2s, box-shadow 0.2s;}
-    .card:hover { transform:translateY(-5px); box-shadow:0 8px 16px rgba(0,0,0,0.25);}
-    .delete-btn { position:absolute; top:8px; right:8px; background:transparent; border:none; font-size:16px; cursor:pointer; color:#888;}
-    .delete-btn:hover { color:red;}
-    .icon { font-size:24px; margin-right:8px;}
-    .card-header { display:flex; align-items:center; font-weight:bold; font-size:16px; margin-bottom:10px;}
-    .card-dates, .card-type { font-size:14px; color:#555; margin-bottom:5px;}
-</style>
+  <meta charset="UTF-8" />
+  <title>Proje Takip Sistemi</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin:20px; background:#f4f4f9; }
+    h1 { text-align:center; }
+    form { background:#fff; padding:15px; border-radius:8px; box-shadow:0 2px 4px rgba(0,0,0,0.1); margin-bottom:20px; }
+    label { display:block; margin-top:10px; }
+    input, select, textarea { width:100%; padding:8px; margin-top:5px; border:1px solid #ccc; border-radius:5px; }
+    button { margin-top:15px; padding:10px 15px; border:none; border-radius:5px; background:#007bff; color:#fff; cursor:pointer; }
+    button:hover { background:#0056b3; }
+    .month-group { margin-bottom:30px; }
+    .cards { display:flex; flex-wrap:wrap; gap:15px; }
+    .card { background:#fff; padding:15px; border-radius:10px; width:300px; box-shadow:0 2px 5px rgba(0,0,0,0.15); cursor:pointer; }
+    .profile { display:flex; align-items:center; margin-top:10px; }
+    .avatar { width:28px; height:28px; border-radius:50%; margin-right:8px; flex-shrink:0; }
+    .details { display:none; margin-top:10px; padding-top:10px; border-top:1px solid #ddd; }
+    .notes { margin-top:10px; }
+    .note { background:#f9f9f9; padding:6px; border-radius:5px; margin-top:5px; font-size:0.9em; }
+    .sidebar { position:fixed; right:10px; top:10px; width:200px; background:#fff; border:1px solid #ccc; border-radius:8px; padding:10px; max-height:90vh; overflow:auto; }
+    .sidebar h3 { margin-top:0; }
+  </style>
 </head>
 <body>
 
-<header style="display:flex; align-items:center; justify-content:center; margin-bottom:30px;">
-    <img src="logo.png" alt="Atölye 1886 Logo" style="height:60px; margin-right:15px;">
-    <h1>"Proje Takip Kartları"</h1>
-</header>
+  <h1>📌 Proje Takip Sistemi</h1>
 
-<form id="projectForm">
-    <input type="text" id="projectName" placeholder="Proje Adı" required>
-    <input type="date" id="startDate" required>
-    <input type="date" id="endDate" required>
-    <select id="projectType" required>
-        <option value="tasarim">3D Tasarım</option>
-        <option value="tersine">Tersine Mühendislik</option>
-        <option value="proto">Prototipleme</option>
+  <!-- Proje Ekleme Formu -->
+  <form id="projectForm">
+    <label>Proje Adı</label>
+    <input type="text" id="title" required>
+
+    <label>Proje Türü</label>
+    <select id="type" required>
+      <option value="3D Tasarım">3D Tasarım</option>
+      <option value="Tersine Mühendislik">Tersine Mühendislik</option>
+      <option value="Prototipleme">Prototipleme</option>
     </select>
-    <button type="submit">Ekle</button>
-</form>
 
-<div id="cardContainer"></div>
+    <label>Proje Özeti</label>
+    <textarea id="summary" rows="2"></textarea>
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <label>Başlangıç Tarihi</label>
+    <input type="date" id="startDate" required>
 
+    <label>Bitiş Tarihi</label>
+    <input type="date" id="endDate">
 
-<script>
-    
-    // 1️⃣ Firebase Konfigürasyonunu buraya yapıştır
+    <label>Teklif Linki</label>
+    <input type="url" id="offer">
+
+    <label>Fatura Linki</label>
+    <input type="url" id="invoice">
+
+    <label>Satın Alma Bilgisi</label>
+    <input type="text" id="purchase">
+
+    <label>Girişi Yapan Kişi</label>
+    <input type="text" id="author" required>
+
+    <button type="submit">➕ Proje Ekle</button>
+  </form>
+
+  <!-- Projeler -->
+  <div id="projects"></div>
+
+  <!-- Biten / Beklemede Sidebar -->
+  <div class="sidebar">
+    <h3>📂 Tamamlanan / Beklemede</h3>
+    <div id="archive"></div>
+  </div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script>
+    // 🔹 Firebase Config (kendi bilgilerini yapıştır)
     const firebaseConfig = {
         apiKey: "AIzaSyCxwXtrXxHbC_LcIlbK_PRIQ4v5pXt1l6w",
         authDomain: "atolye1886projectmanagement.firebaseapp.com",
@@ -61,65 +89,117 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    const icons = { tasarim:"🎨", tersine:"🔍", proto:"⚙️" };
-
-    function renderProjects(projects) {
-        const container = document.getElementById('cardContainer');
-        container.innerHTML = "";
-        Object.keys(projects).forEach(key => {
-            const proj = projects[key];
-            const card = document.createElement('div');
-            card.className = "card";
-
-            const deleteBtn = document.createElement('button');
-            deleteBtn.className = "delete-btn";
-            deleteBtn.innerHTML = "❌";
-            deleteBtn.onclick = () => { db.ref('projects/' + key).remove(); };
-
-            const header = document.createElement('div');
-            header.className = "card-header";
-            header.innerHTML = `<span class="icon">${icons[proj.type]}</span>${proj.name}`;
-
-            const dates = document.createElement('div');
-            dates.className = "card-dates";
-            dates.textContent = `📅 ${proj.start} - ${proj.end}`;
-
-            const type = document.createElement('div');
-            type.className = "card-type";
-            type.textContent = `Kategori: ${proj.type === 'tasarim' ? '3D Tasarım' : proj.type==='tersine' ? 'Tersine Mühendislik' : 'Prototipleme'}`;
-
-            card.appendChild(deleteBtn);
-            card.appendChild(header);
-            card.appendChild(dates);
-            card.appendChild(type);
-
-            container.appendChild(card);
-        });
+    // Rastgele renk oluştur
+    function randomColor() {
+      const colors = ["#ff6b6b","#6bc5ff","#ffd93d","#6bff95","#b26bff"];
+      return colors[Math.floor(Math.random()*colors.length)];
     }
 
-    // 2️⃣ Form gönderimi
-    document.getElementById('projectForm').addEventListener('submit', e => {
-        e.preventDefault();
-        const name = document.getElementById('projectName').value;
-        const start = document.getElementById('startDate').value;
-        const end = document.getElementById('endDate').value;
-        const type = document.getElementById('projectType').value;
-        db.ref('projects').push({name, start, end, type});
-        e.target.reset();
+    // Form gönderildiğinde proje ekle
+    document.getElementById("projectForm").addEventListener("submit", e => {
+      e.preventDefault();
+      const project = {
+        title: document.getElementById("title").value,
+        type: document.getElementById("type").value,
+        summary: document.getElementById("summary").value,
+        startDate: document.getElementById("startDate").value,
+        endDate: document.getElementById("endDate").value,
+        offer: document.getElementById("offer").value,
+        invoice: document.getElementById("invoice").value,
+        purchase: document.getElementById("purchase").value,
+        author: document.getElementById("author").value,
+        avatarColor: randomColor(),
+        status: "active",
+        createdAt: new Date().toISOString()
+      };
+      db.ref("projects").push(project);
+      e.target.reset();
     });
 
-    // 3️⃣ Realtime listener
-    db.ref('projects').on('value', snapshot => {
-        const data = snapshot.val() || {};
-        renderProjects(data);
-    });
-</script>
+    // Projeleri getir
+    db.ref("projects").on("value", snapshot => {
+      const data = snapshot.val();
+      document.getElementById("projects").innerHTML = "";
+      document.getElementById("archive").innerHTML = "";
 
+      if(!data) return;
+
+      // Ay ay grupla
+      const groups = {};
+      Object.entries(data).forEach(([id, proj]) => {
+        const month = proj.startDate ? proj.startDate.slice(0,7) : "Diğer";
+        if(!groups[month]) groups[month] = [];
+        groups[month].push({id,...proj});
+      });
+
+      // Ay bazlı kartları yazdır
+      Object.keys(groups).sort().reverse().forEach(month => {
+        const div = document.createElement("div");
+        div.className="month-group";
+        div.innerHTML = `<h2>${month}</h2><div class="cards"></div>`;
+        groups[month].forEach(proj => {
+          const card = document.createElement("div");
+          card.className="card";
+          card.innerHTML = `
+            <h3>${proj.title}</h3>
+            <p>Tür: ${proj.type}</p>
+            <div class="profile"><div class="avatar" style="background:${proj.avatarColor}"></div> ${proj.author}</div>
+            <div class="details">
+              <p><b>Özet:</b> ${proj.summary||"-"}</p>
+              <p><b>Başlangıç:</b> ${proj.startDate||"-"} <b>Bitiş:</b> ${proj.endDate||"-"}</p>
+              <p><b>Teklif:</b> ${proj.offer?`<a href="${proj.offer}" target="_blank">Gör</a>`:"-"}</p>
+              <p><b>Fatura:</b> ${proj.invoice?`<a href="${proj.invoice}" target="_blank">Gör</a>`:"-"}</p>
+              <p><b>Satın Alma:</b> ${proj.purchase||"-"}</p>
+              <div class="notes">
+                <h4>Notlar</h4>
+                <div class="note-list"></div>
+                <textarea class="note-input" rows="2" placeholder="Not yaz..."></textarea>
+                <button class="save-note">Kaydet</button>
+              </div>
+            </div>
+          `;
+          // Kart aç/kapa
+          card.addEventListener("click", e=>{
+            if(e.target.classList.contains("save-note")) return;
+            card.querySelector(".details").style.display =
+              card.querySelector(".details").style.display==="block"?"none":"block";
+          });
+          // Not ekle
+          card.querySelector(".save-note").addEventListener("click",()=>{
+            const text = card.querySelector(".note-input").value.trim();
+            if(!text) return;
+            const note = {
+              ekleyen: proj.author,
+              tarih: new Date().toLocaleString(),
+              icerik: text
+            };
+            db.ref("projects/"+proj.id+"/notes").push(note);
+            card.querySelector(".note-input").value="";
+          });
+          // Notları getir
+          if(proj.notes){
+            Object.values(proj.notes).forEach(n=>{
+              const div = document.createElement("div");
+              div.className="note";
+              div.textContent = `${n.tarih} - ${n.ekleyen}: ${n.icerik}`;
+              card.querySelector(".note-list").appendChild(div);
+            });
+          }
+          div.querySelector(".cards").appendChild(card);
+        });
+        document.getElementById("projects").appendChild(div);
+      });
+
+      // Arşiv (tamamlanan/beklemede)
+      Object.entries(data).forEach(([id, proj])=>{
+        if(proj.status!=="active"){
+          const p=document.createElement("p");
+          p.textContent=`${proj.title} (${proj.status})`;
+          document.getElementById("archive").appendChild(p);
+        }
+      });
+    });
+  </script>
 </body>
 </html>
-
-
-
-
-
 
