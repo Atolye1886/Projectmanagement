@@ -1,161 +1,141 @@
-  
-
-
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
   <title>Proje Takip Sistemi</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <style>
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 0;
       display: flex;
+      flex-direction: column;
       height: 100vh;
-      background: #f4f6f9;
     }
     header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background: #2c3e50;
+      background: #1e3a8a;
       color: white;
-      text-align: center;
       padding: 15px;
-      font-size: 20px;
+      font-size: 22px;
       font-weight: bold;
-      z-index: 1000;
+      text-align: center;
     }
-    .container {
-      margin-top: 70px;
+    main {
       display: flex;
-      width: 100%;
-    }
-    .projects {
-      flex: 3;
-      padding: 20px;
-      overflow-y: auto;
-    }
-    .form-panel {
-      flex: 1.2;
-      padding: 20px;
-      background: #fff;
-      border-left: 2px solid #ccc;
-      box-shadow: -2px 0 5px rgba(0,0,0,0.1);
-    }
-    .card {
-      background: white;
-      border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 15px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .card h3 { margin: 0; }
-    .meta {
-      font-size: 12px;
-      color: gray;
-      margin: 5px 0;
-    }
-    .profile {
-      display: flex;
-      align-items: center;
-    }
-    .profile-icon {
-      width: 25px;
-      height: 25px;
-      border-radius: 50%;
-      margin-right: 8px;
-    }
-    .notes {
-      margin-top: 10px;
-      border-top: 1px solid #ddd;
-      padding-top: 5px;
-    }
-    .note {
-      font-size: 13px;
-      margin: 3px 0;
-      background: #f1f1f1;
-      padding: 4px 6px;
-      border-radius: 4px;
-    }
-    .note-input {
-      display: flex;
-      margin-top: 5px;
-    }
-    .note-input input {
       flex: 1;
-      padding: 5px;
-      font-size: 13px;
     }
-    .note-input button {
-      padding: 5px 10px;
-      background: #3498db;
-      color: white;
-      border: none;
-      cursor: pointer;
+    #form-panel {
+      width: 350px;
+      background: white;
+      padding: 20px;
+      border-left: 1px solid #ccc;
     }
-    .delete-btn {
-      background: #e74c3c;
-      color: white;
-      border: none;
-      padding: 5px 8px;
-      float: right;
-      cursor: pointer;
-      border-radius: 4px;
-      font-size: 12px;
+    #form-panel h2 {
+      margin-top: 0;
+      font-size: 18px;
     }
-    form input, form textarea, form select {
+    #form-panel input, #form-panel select, #form-panel textarea {
       width: 100%;
       margin-bottom: 10px;
       padding: 8px;
       border: 1px solid #ccc;
-      border-radius: 4px;
+      border-radius: 6px;
     }
-    form button {
-      width: 100%;
-      padding: 10px;
-      background: #2ecc71;
+    #form-panel button {
+      background: #1e3a8a;
       color: white;
       border: none;
-      border-radius: 4px;
+      padding: 10px;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 15px;
+      width: 100%;
+    }
+    #projects {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .project-card {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .project-card h3 {
+      margin: 0 0 10px;
+    }
+    .project-meta {
+      font-size: 14px;
+      color: #555;
+    }
+    .notes {
+      margin-top: 10px;
+      padding: 10px;
+      background: #f9fafb;
+      border-radius: 6px;
+    }
+    .note {
+      font-size: 13px;
+      margin-bottom: 5px;
+      padding: 4px 6px;
+      border-left: 3px solid #1e3a8a;
+      background: #fff;
+    }
+    .add-note {
+      display: flex;
+      margin-top: 8px;
+    }
+    .add-note input {
+      flex: 1;
+      padding: 6px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    .add-note button {
+      margin-left: 5px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 10px;
+      cursor: pointer;
+    }
+    .delete-btn {
+      margin-top: 10px;
+      background: #dc2626 !important;
     }
   </style>
 </head>
 <body>
   <header>📌 Proje Takip Sistemi</header>
-  <div class="container">
-    <div class="projects" id="projectList"></div>
-
-    <div class="form-panel">
+  <main>
+    <div id="projects"></div>
+    <div id="form-panel">
       <h2>Yeni Proje Ekle</h2>
-      <form id="projectForm">
-        <input type="text" id="projectName" placeholder="Proje Adı" required>
-        <textarea id="description" placeholder="Proje Açıklaması" required></textarea>
-        <select id="projectType" required>
-          <option value="">Proje Türü Seç</option>
-          <option>3D Tasarım</option>
-          <option>Tersine Mühendislik</option>
-          <option>Prototipleme</option>
-        </select>
-        <input type="date" id="startDate" required>
-        <input type="date" id="endDate" required>
-        <input type="url" id="offerLink" placeholder="Teklif Linki">
-        <input type="url" id="invoiceLink" placeholder="Fatura Linki">
-        <input type="text" id="purchaseInfo" placeholder="Satın Alma Bilgisi (opsiyonel)">
-        <input type="text" id="personName" placeholder="Girişi Yapan Kişi" required>
-        <button type="submit">Kaydet</button>
-      </form>
+      <input id="title" placeholder="Proje Başlığı">
+      <textarea id="summary" placeholder="Kısa Açıklama"></textarea>
+      <select id="type">
+        <option value="3D Tasarım">3D Tasarım</option>
+        <option value="Tersine Mühendislik">Tersine Mühendislik</option>
+        <option value="Prototipleme">Prototipleme</option>
+      </select>
+      <input id="startDate" type="date" placeholder="Başlangıç Tarihi">
+      <input id="endDate" type="date" placeholder="Bitiş Tarihi">
+      <input id="proposalLink" placeholder="Proje Teklif Linki">
+      <input id="invoiceLink" placeholder="Fatura Linki">
+      <input id="purchaseInfo" placeholder="Satın Alma Bilgisi (opsiyonel)">
+      <input id="author" placeholder="Adınız">
+      <button onclick="addProject()">Kaydet</button>
     </div>
-  </div>
+  </main>
 
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-    import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
-
+  <script>
+    // Firebase config BURAYA kendi configini koy!
     const firebaseConfig = {
         apiKey: "AIzaSyCxwXtrXxHbC_LcIlbK_PRIQ4v5pXt1l6w",
         authDomain: "atolye1886projectmanagement.firebaseapp.com",
@@ -165,80 +145,77 @@
         messagingSenderId: "852948318375",
         appId: "1:852948318375:web:609dd6544580d7d6430382"
     };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    const form = document.getElementById("projectForm");
-    const list = document.getElementById("projectList");
-
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const data = {
-        name: form.projectName.value,
-        desc: form.description.value,
-        type: form.projectType.value,
-        start: form.startDate.value,
-        end: form.endDate.value,
-        offer: form.offerLink.value,
-        invoice: form.invoiceLink.value,
-        purchase: form.purchaseInfo.value,
-        person: form.personName.value,
-        profileColor: "#" + Math.floor(Math.random()*16777215).toString(16),
-        notes: []
+    function addProject() {
+      const project = {
+        title: document.getElementById('title').value,
+        summary: document.getElementById('summary').value,
+        type: document.getElementById('type').value,
+        startDate: document.getElementById('startDate').value,
+        endDate: document.getElementById('endDate').value,
+        proposalLink: document.getElementById('proposalLink').value,
+        invoiceLink: document.getElementById('invoiceLink').value,
+        purchaseInfo: document.getElementById('purchaseInfo').value,
+        author: document.getElementById('author').value,
+        createdAt: Date.now()
       };
-      push(ref(db, "projects"), data);
-      form.reset();
-    });
-
-    function renderProjects(snapshot) {
-      list.innerHTML = "";
-      const data = snapshot.val();
-      if (!data) return;
-      const entries = Object.entries(data).sort((a,b) => new Date(a[1].end) - new Date(b[1].end));
-      entries.forEach(([id, proj]) => {
-        const card = document.createElement("div");
-        card.className = "card";
-        card.innerHTML = `
-          <button class="delete-btn" onclick="deleteProject('${id}')">Sil</button>
-          <h3>${proj.name}</h3>
-          <p>${proj.desc}</p>
-          <div class="meta">📌 Tür: ${proj.type}</div>
-          <div class="meta">📅 ${proj.start} → ${proj.end}</div>
-          ${proj.offer ? `<div class="meta">📄 <a href="${proj.offer}" target="_blank">Teklif</a></div>` : ""}
-          ${proj.invoice ? `<div class="meta">💰 <a href="${proj.invoice}" target="_blank">Fatura</a></div>` : ""}
-          ${proj.purchase ? `<div class="meta">🛒 ${proj.purchase}</div>` : ""}
-          <div class="profile">
-            <div class="profile-icon" style="background:${proj.profileColor}"></div>
-            <span>${proj.person}</span>
-          </div>
-          <div class="notes" id="notes-${id}">
-            ${(proj.notes||[]).map(n => `<div class="note">[${n.date}] ${n.text}</div>`).join("")}
-          </div>
-          <div class="note-input">
-            <input type="text" placeholder="Not ekle..." id="note-${id}">
-            <button onclick="addNote('${id}')">Ekle</button>
-          </div>
-        `;
-        list.appendChild(card);
-      });
+      db.ref('projects').push(project);
+      document.getElementById('form-panel').reset;
     }
 
-    window.deleteProject = (id) => {
-      remove(ref(db, "projects/" + id));
-    };
+    function deleteProject(id) {
+      db.ref('projects/' + id).remove();
+    }
 
-    window.addNote = (id) => {
-      const input = document.getElementById("note-" + id);
-      const text = input.value.trim();
-      if (!text) return;
-      const date = new Date().toLocaleString("tr-TR");
-      const notesRef = ref(db, "projects/" + id + "/notes");
-      push(notesRef, { text, date });
-      input.value = "";
-    };
+    function addNote(projectId, noteText) {
+      const note = {
+        text: noteText,
+        date: new Date().toLocaleString()
+      };
+      db.ref('projects/' + projectId + '/notes').push(note);
+    }
 
-    onValue(ref(db, "projects"), renderProjects);
+    db.ref('projects').on('value', snapshot => {
+      const projectsDiv = document.getElementById('projects');
+      projectsDiv.innerHTML = "";
+      snapshot.forEach(child => {
+        const proj = child.val();
+        const card = document.createElement('div');
+        card.className = 'project-card';
+        card.innerHTML = `
+          <h3>${proj.title}</h3>
+          <div class="project-meta">
+            <b>Tür:</b> ${proj.type} <br>
+            <b>Başlangıç:</b> ${proj.startDate} - <b>Bitiş:</b> ${proj.endDate} <br>
+            <b>Teklif:</b> <a href="${proj.proposalLink}" target="_blank">Link</a> |
+            <b>Fatura:</b> <a href="${proj.invoiceLink}" target="_blank">Link</a> <br>
+            <b>Satın Alma:</b> ${proj.purchaseInfo || '-'} <br>
+            <b>Ekleyen:</b> ${proj.author}
+          </div>
+          <button class="delete-btn" onclick="deleteProject('${child.key}')">❌ Sil</button>
+          <div class="notes" id="notes-${child.key}">
+            <b>Notlar:</b>
+          </div>
+          <div class="add-note">
+            <input id="note-input-${child.key}" placeholder="Not ekle...">
+            <button onclick="addNote('${child.key}', document.getElementById('note-input-${child.key}').value)">Ekle</button>
+          </div>
+        `;
+        projectsDiv.appendChild(card);
+
+        if (proj.notes) {
+          Object.values(proj.notes).forEach(note => {
+            const noteDiv = document.createElement('div');
+            noteDiv.className = 'note';
+            noteDiv.innerText = `[${note.date}] ${note.text}`;
+            card.querySelector(`#notes-${child.key}`).appendChild(noteDiv);
+          });
+        }
+      });
+    });
   </script>
 </body>
 </html>
+
