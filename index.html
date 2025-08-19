@@ -272,7 +272,7 @@ input:focus, textarea:focus, select:focus {
             <button onclick="toggleDetails('${p.id}')">Detaylar</button>
           </div>
           <h4>${p.title}</h4>
-          <div class="details" id="details-${p.id}">
+          <div class="project-details" id="details-${p.id}">
             <p><b>Açıklama:</b> ${p.description}</p>
             <p><b>Tür:</b> ${p.type}</p>
             <p><b>Başlangıç:</b> ${p.startDate} | <b>Bitiş:</b> ${p.endDate}</p>
@@ -298,7 +298,7 @@ input:focus, textarea:focus, select:focus {
 
     function toggleDetails(id) {
       const d = document.getElementById(`details-${id}`);
-      d.style.display = (d.style.display==="block"?"none":"block");
+      d.classList.toggle("open");
     }
 
     function addNote(id) {
@@ -320,6 +320,7 @@ input:focus, textarea:focus, select:focus {
   </script>
 </body>
 </html>
+
 
 
 
