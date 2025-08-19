@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Proje Takip Sistemi</title>
+  <style>
+    body { margin:0; font-family:'Segoe UI', sans-serif; background:#f5f5f5; display:flex; flex-direction:column; height:100vh; }
+    header { background:#111; color:#fff; text-align:center; padding:15px; font-size:22px; font-weight:bold; }
+    main { display:flex; flex:1; }
+    .projects { flex:2; padding:20px; overflow-y:auto; }
+    .project-card { background:#fff; border-radius:12px; padding:15px; margin-bottom:18px; box-shadow:0 3px 6px rgba(0,0,0,0.1); transition:all 0.2s ease; }
+    .project-card:hover { transform:translateY(-3px); box-shadow:0 6px 14px rgba(0,0,0,0.15); }
+    .project-header { display:flex; justify-content:space-between; align-items:center; }
+    .avatar { width:28px; height:28px; border-radius:50%; margin-right:6px; display:inline-block; }
+    .user-info { display:flex; align-items:center; font-size:14px; color:#333; }
+    .details-btn { background:#111; color:#fff; border:none; border-radius:6px; padding:6px 12px; cursor:pointer; font-size:13px; }
+    .details-btn:hover { background:#444; }
+    .project-details { display:none; margin-top:12px; padding:12px; border-top:1px solid #ddd; background:#fafafa; border-radius:6px; }
+    .project-details.open { display:block; }
+    .notes { margin-top:10px; padding-top:6px; border-top:1px solid #ccc; }
+    .note { font-size:13px; padding:4px; border-bottom:1px solid #eee; }
+    .delete-btn { background:#c62828; color:#fff; border:none; border-radius:6px; padding:6px 12px; cursor:pointer; font-size:13px; margin-top:8px; }
+    .delete-btn:hover { background:#e53935; }
+    .sidebar { flex:1; background:#fff; border-left:1px solid #ddd; padding:20px; max-width:340px; }
+    .sidebar h3 { margin-top:0; }
+    input, textarea, select { width:100%; margin:8px 0; padding:8px; border:1px solid #ccc; border-radius:6px; font-size:14px; }
+    button.add-btn { width:100%; padding:10px; border:none; border-radius:8px; font-size:15px; background:#1976d2; color:#fff; cursor:pointer; }
+    button.add-btn:hover { background:#1565c0; }
+  </style>
+</head>
+<body>
+<header>📌 Proje Takip Sistemi</header>
+<main>
+  <div class="projects" id="projects"></div>
+  <div class="sidebar">
+    <h3>Yeni Proje Ekle</h3>
+    <input id="projectName" placeholder="Proje Adı">
+    <textarea id="projectDesc" placeholder="Proje Açıklaması"></textarea>
+    <label>Başlangıç Tarihi:</label>
+    <input type="date" id="startDate">
+    <label>Bitiş Tarihi:</label>
+    <input type="date" id="endDate">
+    <input id="offerLink" placeholder="Teklif Linki">
+    <input id="invoiceLink" placeholder="Fatura Linki">
+    <select id="projectType">
+      <option value="">Proje Türü Seç</option>
+      <option>3D Tasarım</option>
+      <option>Tersine Mühendislik</option>
+      <option>Prototipleme</option>
+    </select>
+    <input id="addedBy" placeholder="Adınızı Yazın">
+    <button class="add-btn" id="addBtn">Ekle</button>
+  </div>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+import { getDatabase, ref, push, set, onValue, get, remove } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+// 🔥 Firebase yapılandır
+const firebaseConfig = {
+        apiKey: "AIzaSyCxwXtrXxHbC_LcIlbK_PRIQ4v5pXt1l6w",
+        authDomain: "atolye1886projectmanagement.firebaseapp.com",
+        databaseURL: "https://atolye1886projectmanagement-default-rtdb.firebaseio.com",
+        projectId: "atolye1886projectmanagement",
+        storageBucket: "atolye1886projectmanagement.firebasestorage.app",
+        messagingSenderId: "852948318375",
+        appId: "1:852948318375:web:609dd6544580d7d6430382"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const projectsDiv = document.getElementById("projects");
+
+function randomColor() {
+  const colors = ["#e57373","#81c784","#64b5f6","#ba68c8","#ffb74d","#4db6ac"];
+  return colors[Math.floor(Math.random() * colors.length)];
+}
+
+// 🌟 Global fonksiyonlar
+window.addProject = function() {
+  const name = document.getElementById("projectName").value;
+  const desc = document.getElementById("projectDesc").value;
+  const start = document.getElementById("startDate").value;
+  const end = document.getElementById("endDate").value;
+  const offer = document.getElementById("offerLink").value;
+  const invoice = document.getElementById("invoiceLink").value;
+  const type = document.getElementById("projectType").value;
+  const addedBy = document.getElementById("addedBy").value;
+
+  if (!name || !desc || !start || !end || !addedBy) {
+    alert("Lütfen gerekli alanları doldurun!");
+    return;
+  }
+
+  const newProject = { name, desc, start, end, offer, invoice, type, addedBy, avatarColor: randomColor(), timestamp: Date.now(), notes: [] };
+  push(ref(db, "projects"), newProject);
+
+  document.querySelectorAll(".sidebar input, .sidebar textarea, .sidebar select").forEach(el => el.value = "");
+};
+
+window.toggleDetails = function(id) {
+  document.getElementById("details-" + id).classList.toggle("open");
+};
+
+window.addNote = function(id) {
+  const input = document.getElementById("noteInput-" + id);
+  const text = input.value;
+  if (!text) return;
+  const date = new Date().toLocaleString();
+
+  const notesRef = ref(db, `projects/${id}/notes`);
+  get(notesRef).then(snapshot => {
+    const notes = snapshot.val() || [];
+    notes.push({ date, text });
+    set(notesRef, notes);
+  });
+  input.value = "";
+};
+
+window.deleteProject = function(id) {
+  if (confirm("Bu projeyi silmek istediğinize emin misiniz?")) {
+    remove(ref(db, `projects/${id}`));
+  }
+};
+
+// 🔄 Projeleri render et
+onValue(ref(db, "projects"), snapshot => {
+  projectsDiv.innerHTML = "";
+  const projects = [];
+  snapshot.forEach(child => projects.push({ id: child.key, ...child.val() }));
+  projects.sort((a,b) => b.timestamp - a.timestamp);
+
+  projects.forEach(p => {
+    const card = document.createElement("div");
+    card.className = "project-card";
+    card.innerHTML = `
+      <div class="project-header">
+        <strong>${p.name}</strong>
+        <button class="details-btn" onclick="toggleDetails('${p.id}')">Detaylar</button>
+      </div>
+      <div class="user-info">
+        <span class="avatar" style="background:${p.avatarColor}"></span> ${p.addedBy}
+      </div>
+      <div id="details-${p.id}" class="project-details">
+        <p><b>Açıklama:</b> ${p.desc}</p>
+        <p><b>Başlangıç:</b> ${p.start} - <b>Bitiş:</b> ${p.end}</p>
+        <p><b>Tür:</b> ${p.type || "-"}</p>
+        ${p.offer ? `<p><a href="${p.offer}" target="_blank">📎 Teklif</a></p>` : ""}
+        ${p.invoice ? `<p><a href="${p.invoice}" target="_blank">📎 Fatura</a></p>` : ""}
+        <div class="notes" id="notes-${p.id}">
+          <b>Notlar:</b>
+          ${(p.notes || []).map(n => `<div class="note">📅 ${n.date}: ${n.text}</div>`).join("")}
+        </div>
+        <input id="noteInput-${p.id}" placeholder="Not ekle...">
+        <button onclick="addNote('${p.id}')">Kaydet</button>
+        <button class="delete-btn" onclick="deleteProject('${p.id}')">Sil</button>
+      </div>
+    `;
+    projectsDiv.appendChild(card);
+  });
+});
+
+// 🌟 Ekle butonunu bağla
+document.getElementById("addBtn").addEventListener("click", addProject);
+</script>
+</body>
+</html>
