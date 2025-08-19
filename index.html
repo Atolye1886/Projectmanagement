@@ -1,152 +1,166 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Proje Takip Sistemi</title>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
+      font-family: 'Segoe UI', sans-serif;
       background: #f5f5f5;
-      color: #333;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
     }
-
     header {
-      background: #000;
-      color: white;
-      padding: 20px;
+      background: #111;
+      color: #fff;
+      text-align: center;
+      padding: 15px;
       font-size: 22px;
       font-weight: bold;
-      text-align: center;
+      letter-spacing: 1px;
     }
-
-    .container {
+    main {
       display: flex;
-      flex-direction: row;
-      gap: 20px;
-      padding: 20px;
+      flex: 1;
     }
-
-    /* SOL TARAF - Proje Listesi */
+    /* SOL TARAF PROJELER */
     .projects {
-      flex: 3;
+      flex: 2;
+      padding: 20px;
+      overflow-y: auto;
     }
-
     .project-card {
-      background: white;
-      padding: 16px;
-      margin-bottom: 16px;
+      background: #fff;
       border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-      transition: transform 0.2s, box-shadow 0.2s;
+      padding: 15px;
+      margin-bottom: 18px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+      transition: all 0.2s ease;
     }
-
     .project-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.15);
     }
-
     .project-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-
-    .project-header h3 {
-      margin: 0;
-    }
-
-    .details-btn {
-      background: #000;
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .project-details {
-      margin-top: 12px;
-      padding: 12px;
-      border-top: 2px solid #000;
-      background: #fafafa;
-      display: none;
-    }
-
-    .project-details.open {
-      display: block;
-    }
-
-    .note {
-      margin-top: 6px;
-      padding: 8px;
-      background: #eee;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-
-    /* SAĞ TARAF - Giriş Paneli */
-    .form-panel {
-      flex: 1;
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-
-    .form-panel input, .form-panel textarea {
-      width: 100%;
-      margin-bottom: 12px;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
-
-    .form-panel button {
-      background: #000;
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 8px;
-      cursor: pointer;
-      width: 100%;
-    }
-
-    .profile-icon {
+    .avatar {
       width: 28px;
       height: 28px;
       border-radius: 50%;
-      display: inline-block;
       margin-right: 6px;
+      display: inline-block;
     }
+    .user-info {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      color: #333;
+    }
+    .details-btn {
+      background: #111;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .details-btn:hover { background: #444; }
+    .project-details {
+      display: none;
+      margin-top: 12px;
+      padding: 12px;
+      border-top: 1px solid #ddd;
+      background: #fafafa;
+      border-radius: 6px;
+    }
+    .project-details.open { display: block; }
+    .notes {
+      margin-top: 10px;
+      padding-top: 6px;
+      border-top: 1px solid #ccc;
+    }
+    .note {
+      font-size: 13px;
+      padding: 4px;
+      border-bottom: 1px solid #eee;
+    }
+    .delete-btn {
+      background: #c62828;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 13px;
+      margin-top: 8px;
+    }
+    .delete-btn:hover { background: #e53935; }
+
+    /* SAĞ TARAF PANEL */
+    .sidebar {
+      flex: 1;
+      background: #fff;
+      border-left: 1px solid #ddd;
+      padding: 20px;
+      max-width: 340px;
+    }
+    .sidebar h3 { margin-top: 0; }
+    input, textarea, select {
+      width: 100%;
+      margin: 8px 0;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    button.add-btn {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      background: #1976d2;
+      color: #fff;
+      cursor: pointer;
+    }
+    button.add-btn:hover { background: #1565c0; }
   </style>
 </head>
 <body>
   <header>📌 Proje Takip Sistemi</header>
-
-  <div class="container">
-    <!-- SOL TARAF -->
+  <main>
     <div class="projects" id="projects"></div>
-
-    <!-- SAĞ TARAF -->
-    <div class="form-panel">
+    <div class="sidebar">
       <h3>Yeni Proje Ekle</h3>
-      <input type="text" id="title" placeholder="Proje Başlığı" required />
-      <textarea id="description" placeholder="Proje Açıklaması"></textarea>
-      <input type="date" id="startDate" placeholder="Başlangıç Tarihi" />
-      <input type="date" id="endDate" placeholder="Bitiş Tarihi" />
-      <input type="text" id="owner" placeholder="Girişi Yapan Kişi" required />
-      <input type="url" id="offerLink" placeholder="Teklif Linki (opsiyonel)" />
-      <input type="url" id="invoiceLink" placeholder="Fatura Linki (opsiyonel)" />
-      <input type="text" id="purchaseInfo" placeholder="Satın Alma Bilgisi (opsiyonel)" />
-      <button onclick="addProject()">Ekle</button>
+      <input id="projectName" placeholder="Proje Adı">
+      <textarea id="projectDesc" placeholder="Proje Açıklaması"></textarea>
+      <label>Başlangıç Tarihi:</label>
+      <input type="date" id="startDate">
+      <label>Bitiş Tarihi:</label>
+      <input type="date" id="endDate">
+      <input id="offerLink" placeholder="Teklif Linki">
+      <input id="invoiceLink" placeholder="Fatura Linki">
+      <select id="projectType">
+        <option value="">Proje Türü Seç</option>
+        <option>3D Tasarım</option>
+        <option>Tersine Mühendislik</option>
+        <option>Prototipleme</option>
+      </select>
+      <input id="addedBy" placeholder="Adınızı Yazın">
+      <button class="add-btn" onclick="addProject()">Ekle</button>
     </div>
-  </div>
+  </main>
 
-  <script>
-    // Firebase ayarları (kendi config’inizi buraya koyacaksınız!)
+  <script type="module">
+    // 🔥 Firebase yapılandır
     const firebaseConfig = {
         apiKey: "AIzaSyCxwXtrXxHbC_LcIlbK_PRIQ4v5pXt1l6w",
         authDomain: "atolye1886projectmanagement.firebaseapp.com",
@@ -156,90 +170,105 @@
         messagingSenderId: "852948318375",
         appId: "1:852948318375:web:609dd6544580d7d6430382"
     };
-    firebase.initializeApp(firebaseConfig);
+    const app = firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // Renk paleti (profil ikonu için)
-    const colors = ["#f44336", "#3f51b5", "#009688", "#ff9800", "#9c27b0", "#2196f3"];
+    const projectsDiv = document.getElementById("projects");
 
-    function addProject() {
-      const title = document.getElementById("title").value;
-      const description = document.getElementById("description").value;
-      const startDate = document.getElementById("startDate").value;
-      const endDate = document.getElementById("endDate").value;
-      const owner = document.getElementById("owner").value;
-      const offerLink = document.getElementById("offerLink").value;
-      const invoiceLink = document.getElementById("invoiceLink").value;
-      const purchaseInfo = document.getElementById("purchaseInfo").value;
-
-      if (!title || !owner) return alert("Başlık ve kişi adı zorunlu!");
-
-      const color = colors[Math.floor(Math.random() * colors.length)];
-      const projectRef = db.ref("projects").push();
-      projectRef.set({
-        title, description, startDate, endDate, owner, color,
-        offerLink, invoiceLink, purchaseInfo,
-        notes: [],
-        createdAt: Date.now()
-      });
-
-      document.querySelectorAll(".form-panel input, .form-panel textarea").forEach(el => el.value = "");
+    function randomColor() {
+      const colors = ["#e57373","#81c784","#64b5f6","#ba68c8","#ffb74d","#4db6ac"];
+      return colors[Math.floor(Math.random() * colors.length)];
     }
 
-    // Projeleri çek ve listele
-    db.ref("projects").orderByChild("createdAt").on("value", snapshot => {
-      const container = document.getElementById("projects");
-      container.innerHTML = "";
-      snapshot.forEach(child => {
-        const proj = child.val();
-        const id = child.key;
+    function addProject() {
+      const name = document.getElementById("projectName").value;
+      const desc = document.getElementById("projectDesc").value;
+      const start = document.getElementById("startDate").value;
+      const end = document.getElementById("endDate").value;
+      const offer = document.getElementById("offerLink").value;
+      const invoice = document.getElementById("invoiceLink").value;
+      const type = document.getElementById("projectType").value;
+      const addedBy = document.getElementById("addedBy").value;
 
+      if (!name || !desc || !start || !end || !addedBy) {
+        alert("Lütfen gerekli alanları doldurun!");
+        return;
+      }
+
+      const newProject = {
+        name, desc, start, end, offer, invoice, type, addedBy,
+        avatarColor: randomColor(),
+        timestamp: Date.now(),
+        notes: []
+      };
+      firebase.database().ref("projects").push(newProject);
+      document.querySelectorAll(".sidebar input, .sidebar textarea, .sidebar select").forEach(el => el.value = "");
+    }
+
+    function renderProjects(snapshot) {
+      projectsDiv.innerHTML = "";
+      const projects = [];
+      snapshot.forEach(child => {
+        projects.push({ id: child.key, ...child.val() });
+      });
+      projects.sort((a, b) => b.timestamp - a.timestamp);
+
+      projects.forEach(p => {
         const card = document.createElement("div");
         card.className = "project-card";
+
         card.innerHTML = `
           <div class="project-header">
-            <h3>${proj.title}</h3>
-            <button class="details-btn" onclick="toggleDetails('${id}')">Detaylar</button>
+            <strong>${p.name}</strong>
+            <button class="details-btn" onclick="toggleDetails('${p.id}')">Detaylar</button>
           </div>
-          <div class="project-details" id="details-${id}">
-            <p><strong>Açıklama:</strong> ${proj.description || "-"}</p>
-            <p><strong>Başlangıç:</strong> ${proj.startDate || "-"} | <strong>Bitiş:</strong> ${proj.endDate || "-"}</p>
-            <p><span class="profile-icon" style="background:${proj.color}"></span> ${proj.owner}</p>
-            ${proj.offerLink ? `<p>📑 <a href="${proj.offerLink}" target="_blank">Teklif</a></p>` : ""}
-            ${proj.invoiceLink ? `<p>🧾 <a href="${proj.invoiceLink}" target="_blank">Fatura</a></p>` : ""}
-            ${proj.purchaseInfo ? `<p>💳 ${proj.purchaseInfo}</p>` : ""}
-            <h4>Notlar</h4>
-            <div id="notes-${id}">
-              ${(proj.notes || []).map(n => `<div class="note">🗒 ${n.text} <br><small>${n.date}</small></div>`).join("")}
+          <div class="user-info">
+            <span class="avatar" style="background:${p.avatarColor}"></span> ${p.addedBy}
+          </div>
+          <div id="details-${p.id}" class="project-details">
+            <p><b>Açıklama:</b> ${p.desc}</p>
+            <p><b>Başlangıç:</b> ${p.start} - <b>Bitiş:</b> ${p.end}</p>
+            <p><b>Tür:</b> ${p.type || "-"}</p>
+            ${p.offer ? `<p><a href="${p.offer}" target="_blank">📎 Teklif</a></p>` : ""}
+            ${p.invoice ? `<p><a href="${p.invoice}" target="_blank">📎 Fatura</a></p>` : ""}
+            <div class="notes" id="notes-${p.id}">
+              <b>Notlar:</b>
+              ${(p.notes || []).map(n => `<div class="note">📅 ${n.date}: ${n.text}</div>`).join("")}
             </div>
-            <input type="text" placeholder="Not ekle..." id="noteInput-${id}" />
-            <button onclick="addNote('${id}')">Not Ekle</button>
-            <br><br>
-            <button style="background:red" onclick="deleteProject('${id}')">❌ Projeyi Sil</button>
+            <input id="noteInput-${p.id}" placeholder="Not ekle...">
+            <button onclick="addNote('${p.id}')">Kaydet</button>
+            <button class="delete-btn" onclick="deleteProject('${p.id}')">Sil</button>
           </div>
         `;
-        container.prepend(card);
+        projectsDiv.appendChild(card);
       });
-    });
+    }
 
-    function toggleDetails(id) {
+    window.toggleDetails = function(id) {
       document.getElementById("details-" + id).classList.toggle("open");
     }
 
-    function addNote(id) {
+    window.addNote = function(id) {
       const input = document.getElementById("noteInput-" + id);
       const text = input.value;
       if (!text) return;
-      const note = { text, date: new Date().toLocaleString() };
-      db.ref("projects/" + id + "/notes").push(note);
+      const date = new Date().toLocaleString();
+      const ref = firebase.database().ref("projects/" + id + "/notes");
+      ref.get().then(snap => {
+        const notes = snap.val() || [];
+        notes.push({ date, text });
+        firebase.database().ref("projects/" + id + "/notes").set(notes);
+      });
       input.value = "";
     }
 
-    function deleteProject(id) {
+    window.deleteProject = function(id) {
       if (confirm("Bu projeyi silmek istediğinize emin misiniz?")) {
-        db.ref("projects/" + id).remove();
+        firebase.database().ref("projects/" + id).remove();
       }
     }
+
+    firebase.database().ref("projects").on("value", renderProjects);
   </script>
 </body>
 </html>
