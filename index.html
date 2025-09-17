@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <title>Proje Takip Sistemi</title>
+  <title>Proje Takip Sistemi📌</title>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <style>
@@ -191,7 +191,7 @@ input:focus, textarea:focus, select:focus {
   </style>
 </head>
 <body>
-  <header style="font-size:50px;"> <img src="logo.png" height="80">📌 Proje Takip Sistemi</header>
+  <header style="font-size:50px; margin-left:60px; margin-top:60px;"> <img src="logo.png" height="80">📌 Proje Takip Sistemi</header>
 
   <div id="projects"></div>
 
@@ -265,10 +265,8 @@ input:focus, textarea:focus, select:focus {
         card.className = "project-card";
         card.innerHTML = `
           <div class="project-header">
-            <div class="profile">
-              <div class="avatar" style="background:${p.avatarColor}"></div>
-              <strong>${p.addedBy}</strong>
-            </div>
+          <h1>📌</h1>
+            
             <button onclick="toggleDetails('${p.id}')">Detaylar</button>
           </div>
           <h4>${p.title}</h4>
@@ -282,6 +280,10 @@ input:focus, textarea:focus, select:focus {
             <input id="noteInput-${p.id}" placeholder="Not ekle..." style="width:70%">
             <button onclick="addNote('${p.id}')">Ekle</button>
             <button onclick="deleteProject('${p.id}')">❌ Sil</button>
+            <div class="profile">
+              <div class="avatar" style="background:${p.avatarColor}"></div>
+              <strong>${p.addedBy}</strong>
+            </div>
           </div>
         `;
         if (p.notes) {
@@ -320,6 +322,7 @@ input:focus, textarea:focus, select:focus {
   </script>
 </body>
 </html>
+
 
 
 
