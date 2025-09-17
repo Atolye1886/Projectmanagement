@@ -77,6 +77,15 @@ h1 {
   box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
 
+.projectnamebrand {
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+}
+
+.projectnamebrand:hover {
+  transform: translateY(-6px);
+  text-shadow: 5px 5px 10px rgba(0,0,0,0.2);
+}
+
 /* KART BAŞLIĞI */
 .project-card h3 {
   margin: 0;
@@ -265,7 +274,7 @@ input:focus, textarea:focus, select:focus {
         card.className = "project-card";
         card.innerHTML = `
           <div class="project-header">
-          <h1>📌</h1>
+          <h1 class="projectnamebrand">📌</h1>
             
             <button onclick="toggleDetails('${p.id}')">Detaylar</button>
           </div>
@@ -322,6 +331,7 @@ input:focus, textarea:focus, select:focus {
   </script>
 </body>
 </html>
+
 
 
 
