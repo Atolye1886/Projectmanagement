@@ -349,16 +349,17 @@ function uploadInvoice(id) {
       input.value="";
     }
 
-    function deleteProject(id) {
-      if (confirm("Bu projeyi silmek istediğine emin misin?")) {
-        db.ref("projects/"+id).remove();
-      }
-    }
+    ///function deleteProject(id) {
+    ///  if (confirm("Bu projeyi silmek istediğine emin misin?")) {
+    ///    db.ref("projects/"+id).remove();
+    ///   }
+    ///}
 
     db.ref("projects").on("value", renderProjects);
   </script>
 </body>
 </html>
+
 
 
 
