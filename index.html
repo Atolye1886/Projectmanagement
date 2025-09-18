@@ -253,8 +253,6 @@ input:focus, textarea:focus, select:focus {
         description: document.getElementById("description").value,
         startDate: document.getElementById("startDate").value,
         endDate: document.getElementById("endDate").value,
-        proposal: document.getElementById("proposal").value,
-        invoice: document.getElementById("invoice").value,
         type: document.getElementById("type").value,
         addedBy: document.getElementById("addedBy").value,
         avatarColor: randomColor(),
@@ -264,6 +262,27 @@ input:focus, textarea:focus, select:focus {
       db.ref("projects").push(project);
       document.querySelectorAll("#form-panel input, #form-panel textarea").forEach(el=>el.value="");
     }
+    function uploadProposal(id) {
+  let link = prompt("Teklif linkini girin:");
+  if (link) {
+    // Eğer kullanıcı http/https yazmadıysa otomatik ekle
+    if (!link.startsWith("http://") && !link.startsWith("https://")) {
+      link = "https://" + link;
+    }
+    db.ref("projects/" + id).update({ proposal: link });
+  }
+}
+
+function uploadInvoice(id) {
+  let link = prompt("Fatura linkini girin:");
+  if (link) {
+    // Eğer kullanıcı http/https yazmadıysa otomatik ekle
+    if (!link.startsWith("http://") && !link.startsWith("https://")) {
+      link = "https://" + link;
+    }
+    db.ref("projects/" + id).update({ invoice: link });
+  }
+}
 
     function renderProjects(snapshot) {
       const projectsDiv = document.getElementById("projects");
@@ -287,8 +306,15 @@ input:focus, textarea:focus, select:focus {
             <p><b>Açıklama:</b> ${p.description}</p>
             <p><b>Tür:</b> ${p.type}</p>
             <p><b>Başlangıç:</b> ${p.startDate} | <b>Bitiş:</b> ${p.endDate}</p>
-            <p><b>Teklif:</b> <a href="${p.proposal}" target="_blank">Link</a></p>
-            <p><b>Fatura:</b> <a href="${p.invoice}" target="_blank">Link</a></p>
+            <p><b>Teklif:</b> 
+  ${p.proposal ? `<a href="${p.proposal}" target="_blank">Link</a>` 
+               : `<button onclick="uploadProposal('${p.id}')">📤 Yükle</button>`}
+</p>
+
+<p><b>Fatura:</b> 
+  ${p.invoice ? `<a href="${p.invoice}" target="_blank">Link</a>` 
+              : `<button onclick="uploadInvoice('${p.id}')">📤 Yükle</button>`}
+</p>
             <div id="notes-${p.id}"></div>
             <input id="noteInput-${p.id}" placeholder="Not ekle..." style="width:70%">
             <button onclick="addNote('${p.id}')">Ekle</button>
@@ -335,6 +361,7 @@ input:focus, textarea:focus, select:focus {
   </script>
 </body>
 </html>
+
 
 
 
