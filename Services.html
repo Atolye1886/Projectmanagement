@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Atölye1886 | Hizmetler ve Eğitimler</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+/* =======================
+   GENEL AYARLAR
+======================= */
+:root {
+  --primary: #486c92;
+  --secondary: #f5f7fa;
+  --accent: #e63946;
+  --text: #2b2b2b;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: var(--secondary);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* =======================
+   HEADER
+======================= */
+header {
+  background: var(--primary);
+  color: #fff;
+  padding: 55px 20px;
+  text-align: center;
+}
+
+header img {
+  max-width: 160px;
+  margin-bottom: 20px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 34px;
+}
+
+header p {
+  max-width: 900px;
+  margin: 15px auto 0;
+  font-size: 16px;
+  opacity: 0.95;
+}
+
+/* =======================
+   GENEL YAPI
+======================= */
+.container {
+  max-width: 1100px;
+  margin: 60px auto;
+  padding: 0 20px;
+}
+
+.section {
+  margin-bottom: 80px;
+}
+
+.section h2 {
+  color: var(--primary);
+  border-left: 6px solid var(--accent);
+  padding-left: 12px;
+  margin-bottom: 25px;
+}
+
+.intro {
+  max-width: 900px;
+  margin-bottom: 30px;
+  font-size: 16px;
+}
+
+/* =======================
+   INFOGRAFIK
+======================= */
+.infographic {
+  width: 100%;
+  max-width: 1000px;
+  display: block;
+  margin: 0 auto 45px;
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+}
+
+/* =======================
+   KARTLAR
+======================= */
+.card {
+  background: #fff;
+  padding: 28px;
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.05);
+  margin-bottom: 25px;
+}
+
+.card h3 {
+  margin-top: 0;
+  color: var(--primary);
+}
+
+ul {
+  padding-left: 18px;
+}
+
+li {
+  margin-bottom: 8px;
+}
+
+.tagline {
+  margin-top: 14px;
+  font-style: italic;
+  color: #555;
+}
+
+/* =======================
+   FOOTER
+======================= */
+footer {
+  background: #fff;
+  padding: 40px 20px;
+  text-align: center;
+  border-top: 1px solid #ddd;
+}
+
+footer strong {
+  color: var(--primary);
+}
+
+/* =======================
+   MOBIL
+======================= */
+@media (max-width: 768px) {
+  header h1 {
+    font-size: 26px;
+  }
+}
+
+/* =======================
+   PRINT / PDF
+======================= */
+@media print {
+  body {
+    background: #fff;
+    color: #000;
+  }
+
+  header {
+    background: var(--primary);
+    color: #fff;
+    padding: 40px 20px;
+  }
+
+  .container {
+    max-width: 100%;
+    margin: 0;
+    padding: 0 24px;
+  }
+
+  .section {
+    page-break-inside: avoid;
+  }
+s
+  .card {
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+
+  .infographic {
+    box-shadow: none;
+    border-radius: 0;
+    page-break-inside: avoid;
+  }
+
+  footer {
+    page-break-before: always;
+  }
+}
+@media print {
+  h2, h3 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+}
+@media print {
+  .card {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+}
+@media print {
+  .section {
+    page-break-inside: avoid;
+  }
+}
+@media print {
+  .infographic {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    max-height: 240mm;
+  }
+}
+@media print {
+
+  @page {
+    size: A4;
+    margin: 20mm;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+}
+@media print {
+
+  body {
+    font-size: 10.5pt;
+    line-height: 1.35;
+  }
+
+  h1 {
+    font-size: 18pt;
+    margin-bottom: 10pt;
+  }
+
+  h2 {
+    font-size: 14pt;
+    margin-bottom: 8pt;
+  }
+
+  h3 {
+    font-size: 12pt;
+  }
+
+  p, li {
+    font-size: 10.5pt;
+  }
+
+}
+@media print {
+  .container {
+    width: 170mm;
+    margin: 0 auto;
+  }
+}
+@media print {
+
+  h1, h2, h3 {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+
+  section, .block {
+    page-break-inside: avoid;
+  }
+
+}
+@media print {
+  img {
+    max-width: 100%;
+    height: auto;
+    page-break-inside: avoid;
+  }
+}
+@media print {
+  .infografik {
+    margin-bottom: 12mm;
+  }
+}
+@media print {
+
+  .services-section {
+    font-size: 10pt;
+    line-height: 1.28;
+  }
+
+  .services-section p,
+  .services-section li {
+    font-size: 10pt;
+    margin-bottom: 3pt;
+  }
+
+}
+@media print {
+
+  .services-section h2 {
+    font-size: 13pt;
+    margin-top: 8pt;
+    margin-bottom: 4pt;
+  }
+
+  .services-section h3 {
+    font-size: 11pt;
+    margin-top: 4pt;
+    margin-bottom: 2pt;
+  }
+
+}
+@media print {
+
+  .services-section ul {
+    margin-top: 2pt;
+    margin-bottom: 6pt;
+    padding-left: 14pt;
+  }
+
+  .services-section li {
+    margin-bottom: 2pt;
+  }
+
+}
+
+
+
+</style>
+</head>
+
+<body>
+
+<header>
+  <img src="logo.png"  alt="Atölye1886 Logo">
+  <h1>MERSİN ENDÜSTRİYEL TASARIM & KOBİ DANIŞMANLIK MERKEZİ</h1>
+  <p>
+    Endüstriyel tasarım, prototipleme, tersine mühendislik ve
+    uygulamalı teknik eğitimler ile sanayinin çözüm ortağı
+  </p>
+</header>
+
+<div class="container">
+
+<!-- =======================
+     HİZMETLER
+======================= -->
+<div class="section">
+  <h2>🛠️ Hizmetlerimiz</h2>
+
+  <img src="Hizmetler infografik.png" class="infographic"
+       alt="Atölye1886 Hizmetler İnfografiği">
+
+  <div class="intro">
+    Atölye1886; başta imalat sanayi olmak üzere tüm sektörlerde faaliyet
+    gösteren KOBİ’lere, girişimcilere ve araştırmacılara yönelik
+    yüksek katma değerli mühendislik hizmetleri sunar.
+    Ürün geliştirme sürecinin fikir aşamasından üretime kadar olan
+    tüm adımlarında teknik çözüm ortağı olarak yer alır.
+  </div>
+
+  <div class="card">
+    <h3>Endüstriyel Tasarım ve Simülasyon Atölyesi</h3>
+    <ul>
+      <li>SolidWorks ile 3B ürün ve makine tasarımı</li>
+      <li>ANSYS ile yapısal ve mühendislik analizleri</li>
+      <li>Üretime uygun ürün geliştirme</li>
+      <li>Mevcut ürünlerin iyileştirilmesi</li>
+    </ul>
+    <div class="tagline">
+      Yeni bir makine tasarlamak istiyorsanız, sadece ne yapacağını anlatın.
+      Mühendisliğini biz üstlenelim.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Eklemeli Üretim (3B Baskı) Atölyesi</h3>
+    <ul>
+      <li>FDM 3B yazıcılarla prototipleme</li>
+      <li>Fonksiyonel ve deneysel prototipler</li>
+      <li>Yeni üretim teknolojilerinin test edilmesi</li>
+    </ul>
+    <div class="tagline">
+      Fikirden prototipe giden en kısa yol.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Tersine Mühendislik Atölyesi</h3>
+    <ul>
+      <li>3B optik tarama ile hassas ölçüm</li>
+      <li>CAD veri oluşturma</li>
+      <li>Boyutsal kalite kontrol</li>
+      <li>Tedarikçi ve ürün karşılaştırmaları</li>
+    </ul>
+    <div class="tagline">
+      Bulunamayan parçalar ve uyumsuz sistemler için çözüm.
+    </div>
+  </div>
+</div>
+
+<!-- =======================
+     EĞİTİMLER
+======================= -->
+<div class="section">
+  <h2>🎓 Eğitim Programlarımız</h2>
+
+  <img src="Eğitimler infografik.png" class="infographic"
+       alt="Atölye1886 Eğitimler İnfografiği">
+
+  <div class="intro">
+    Atölye1886 eğitimleri; mühendisler, teknikerler ve sanayi çalışanları için
+    uygulamalı, güncel ve sahaya doğrudan aktarılabilir yetkinlikler kazandırmayı hedefler.
+  </div>
+
+  <div class="card">
+    <h3>🖥️CAD / CAE Yazılım Eğitimleri</h3>
+    <ul>
+      <li><b>SolidWorks Çizim Eğitimi</b>
+        <ul>
+            <li>3B parça, montaj ve teknik resim oluşturma</li>
+            <li>İmalata uygun tasarım prensipleri</li>
+            <li>Tasarım–üretim ilişkisi ve revizyon yönetimi</li>
+            <li>Gerçek sektör örnekleri üzerinden uygulamalar</li>
+        </ul>
+        <i>✏️ Fikrinizi sadece çizen değil, üretilebilir hale getiren bir tasarım anlayışı kazandırır.</i>
+      </li>
+      <li><b>ANSYS Mechanical Eğitimi</b>
+        <ul>
+            <li>Yapısal analiz, gerilme ve deformasyon hesapları</li>
+            <li>Tasarımların sanal ortamda test edilmesi</li>
+            <li>Ürün dayanımı, güvenlik ve performans değerlendirme</li>
+            <li>Tasarım doğrulama (validation) yaklaşımı</li>
+        </ul>
+        <i>🔍 Üretmeden önce davranışı görmek isteyenler için.</i>
+      </li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>🤖Otomasyon ve Robotik</h3>
+    <ul>
+      <li><b>Robot Kol & Cobot Programlama (ABB – KUKA) Eğitimi</b>
+        <ul>
+            <li>Endüstriyel robot ve kolaboratif robot (cobot) kavramları</li>
+            <li>Temel ve ileri seviye robot programlama</li>
+            <li>Üretim hatlarında robot entegrasyonu</li>
+            <li>İş güvenliği ve insan–robot etkileşimi</li>
+        </ul>
+        <i>🤖 Robotu kullanan değil, süreci yöneten insan yetiştirir.</i>
+      </li>
+      <li><b>PLC Programlama (Siemens S7-1200 – TIA Portal) Eğitimi</b>
+        <ul>  
+            <li>Endüstriyel robot ve kolaboratif robot (cobot) kavramları</li>
+            <li>PLC donanım yapısı ve çalışma prensipleri</li>
+            <li>TIA Portal ortamında programlama</li>
+            <li>Endüstriyel otomasyon senaryoları</li>
+            <li>Sensör, motor ve saha ekipmanları ile entegrasyon</li>
+        </ul>
+        <i>⚙️ Bir üretim hattının kalbi olan otomasyonu anlamak isteyenler için.</i>
+      </li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>🧠Elektrik – Elektronik ve Mekatronik</h3>
+    <ul>
+      <li><b>Pnömatik Sistemler ve Kestirimci Bakım</b>
+        <ul>  
+            <li>Pnömatik sistem elemanları ve devre mantığı</li>
+            <li>Endüstriyel pnömatik uygulamalar</li>
+            <li>Sensörler ile pnömatik sistem izleme</li>
+            <li>Arıza türleri, arıza kök neden analizi</li>
+            <li>Veriye dayalı kestirimci bakım yaklaşımı</li>
+        </ul>
+        <i>🔧 Sistemi yalnızca çalıştırmayı değil, arızayı oluşmadan öngörmeyi öğretir.</i>
+        </li>
+      <li><b>Asenkron Motor ve Sürücü Kullanımı Eğitimi</b>
+        <ul>  
+            <li>Asenkron motor çalışma prensipleri</li>
+            <li>Sürücü parametreleri ve hız kontrolü</li>
+            <li>Enerji verimliliği ve proses optimizasyonu</li>
+        </ul>
+        <i>🔌 Motoru çalıştırmak değil, doğru çalıştırmak esastır.</i>
+      </li>
+      <li><b>Servo Motor Eğitimi</b>
+        <ul>  
+            <li>Servo motor ve sürücü yapısı</li>
+            <li>Hassas konumlama ve hareket kontrolü</li>
+            <li>Otomasyon sistemlerinde servo uygulamaları</li>
+        </ul>
+        <i>📡 Makinenin dili sensördür, onu doğru okumayı öğretir.</i>
+      </li>
+      <li><b>Sensörler ve Akıllı Sensörler Eğitimi</b>
+        <ul>  
+            <li>Endüstriyel sensör türleri ve kullanım alanları</li>
+            <li>Akıllı sensörlerin veri toplama ve yorumlama yetenekleri</li>
+            <li>Üretimde izleme, kalite ve bakım uygulamaları</li>
+            <li>Endüstriyel otomasyon senaryoları</li>
+            <li>Sensör, motor ve saha ekipmanları ile entegrasyon</li>
+        </ul>
+        <i>⚙️ Bir üretim hattının kalbi olan otomasyonu anlamak isteyenler için.</i>
+      </li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>🧩Gömülü Sistemler ve Uygulamalı Öğrenme</h3>
+    <ul>
+      <li><b>Arduino Eğitimi</b>
+        <ul>  
+            <li>Temel elektronik ve mikrodenetleyici mantığı</li>
+            <li>Sensör, motor ve modül uygulamaları</li>
+            <li>Proje tabanlı öğrenme yaklaşımı</li>
+            <li>Prototip geliştirme süreçleri</li>
+        </ul>
+        <i>🔧 Fikrinizi çalışan bir ürüne dönüştürmenin ilk adımı.</i>
+      </li>
+      <li>Proje tabanlı uygulamalar</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>🎲Yalın Üretim, Dijitalleşme ve Endüstri 4.0</h3>
+    <ul>
+      <li><b>Syncro Game – Yalın Üretim Oyunu</b>
+        <ul>  
+            <li>Yalın üretim prensipleri ve israf türleri</li>
+            <li>Süreç akışı, dengeleme ve verimlilik kavramları</li>
+            <li>Kararların üretim performansına etkisini deneyimleme</li>
+        </ul>
+        <i>🎯 Yalın üretimi okuyarak değil, yaşayarak öğrenin.</i>
+      <li><b>Yalın Üretim ve Endüstri 4.0 İlişkisi (Opsiyonel Modül)</b>
+        <ul>
+            <li>Yalın üretim ile dijital dönüşümün birlikte ele alınması</li>
+            <li>Endüstri 4.0’ın yalın süreçlere katkısı</li>
+            <li>Sensör, veri ve dijital izleme ile süreç iyileştirme</li>
+            <li>“Yalın 4.0” bakış açısı</li>
+        </ul>
+        <i>🌐 Günümüzde yalın ve dijital artık ayrı düşünülemez.</i>
+      </li>
+    </ul>
+  </div>
+</div>
+
+</div>
+
+<footer>
+  <strong>Atölye1886</strong><br>
+  Detaylı bilgi ve talepleriniz için<br>
+  📧 atolye1886@mtso.org.tr
+</footer>
+
+</body>
+</html>
